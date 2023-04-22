@@ -1,0 +1,38 @@
+version: '3.3'
+
+networks:
+  internal:
+    internal: true
+
+services:
+  db:
+    image: postgres:14.1-alpine
+    volumes:
+      - ./db_vol:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: p4ssw0rd
+    networks:
+      - internal
+  drp:
+    image: drupal
+    networks:
+      - internal
+    volumes:
+      - ./drp_vol/modules:/var/www/html/modules
+      - ./drp_vol/profiles:/var/www/html/profiles
+      - ./drp_vol/themes:/var/www/html/themes
+      - ./drp_vol/sites:/var/www/html/sites
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 2
+  lb:
+    image: haproxytech/haproxy-alpine:2.4
+    ports:
+      - 8080:80
+    networks:
+      - default
+      - internal
+    volumes:
+      - ./ha_vol:/usr/local/etc/haproxy:ro
