@@ -8,5 +8,10 @@ services:
       - gateway.env
     ports:
       - 8000:8000
+  trips:
+    build:
+      context: ./trips
+    env_file:
+      - trips.env
   mq:
     image: rabbitmq:3-management
