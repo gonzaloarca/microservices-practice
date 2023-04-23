@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  gateway:
+    build:
+      context: ./gateway
+    env_file:
+      - gateway.env
+    ports:
+      - 8000:8000
+  mq:
+    image: rabbitmq:3-management
