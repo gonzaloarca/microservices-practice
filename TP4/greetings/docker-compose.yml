@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  serv:
+    build:
+      context: ./service      
+    env_file:
+      - ./config/.env
+    volumes:
+      - ./config/config.yml:/src/config.yml
+  cons:
+    build:
+      context: ./consumer
+    env_file:
+      - ./config/.env
+    volumes:
+      - ./config/config.yml:/src/config.yml
+  mq:
+    image: rabbitmq:3-management
+
