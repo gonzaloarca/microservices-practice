@@ -11,6 +11,9 @@ services:
     depends_on:
       mq:
         condition: service_healthy
+    networks:
+      - mq
+      - default
   trips:
     build:
       context: ./trips
@@ -19,6 +22,9 @@ services:
     depends_on:
       redis-trips:
         condition: service_healthy
+    networks:
+      - trips
+      - mq
   airports:
     build:
       context: ./airports
@@ -27,18 +33,38 @@ services:
     depends_on:
       redis-airport:
         condition: service_healthy
+    networks:
+      - airports
+      - mq
   redis-trips:
     image: redis:7-alpine
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
+    networks:
+      - trips
   redis-airport:
     image: redis:7-alpine
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
+    networks:
+      - airports
   mq:
     image: rabbitmq:3-management
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 5s
+    networks:
+      - mq
+
+networks:
+  airports:
+    driver: bridge
+    internal: true
+  trips:
+    driver: bridge
+    internal: true
+  mq:
+    driver: bridge
+    internal: true
