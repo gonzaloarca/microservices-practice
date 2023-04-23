@@ -13,5 +13,14 @@ services:
       context: ./trips
     env_file:
       - trips.env
+  airports:
+    build:
+      context: ./airports
+    env_file:
+      - airports.env
+  redis-trips:
+    image: redis:7-alpine
+  redis-airport:
+    image: redis:7-alpine
   mq:
     image: rabbitmq:3-management
